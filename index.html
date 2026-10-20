@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Omaar Saada – Portfolio</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>Omaar <span>Saada</span></h1>
+    <p class="tagline">// IT Specialist · System Integration · Windows &amp; Linux</p>
+  </header>
+
+  <nav id="tabs">
+    <button data-tab="about">About</button>
+    <button data-tab="articles">Articles</button>
+    <button data-tab="news">News</button>
+    <button data-tab="apps">Apps</button>
+    <button data-tab="winlinux">Windows &amp; Linux</button>
+  </nav>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <h2>About me</h2>
+    <p>I am an IT Specialist with a focus on System Integration and infrastructure management. I specialize in bridging the gap between operating system management, network administration, and modern software tools.</p>
+    <p>Driven by a passion for hands-on technical problem-solving, my work spans configuring enterprise environments, writing automation scripts for Windows and Linux, and exploring cyber security practices. When I am not optimizing systems or working on local labs, I share technical scripts, build utility applications, and write about open-source technology.</p>
+    <h3>Focus areas</h3>
+    <ul class="chips">
+      <li>System Integration</li>
+      <li>Infrastructure</li>
+      <li>Network Administration</li>
+      <li>Windows &amp; Linux</li>
+      <li>Automation Scripting</li>
+      <li>Cyber Security</li>
+      <li>Open Source</li>
+    </ul>
+  </section>
+
+  <!-- ARTICLES -->
+  <section id="articles">
+    <div id="article-list">
+      <h2>Articles</h2>
+      <div class="grid">
+        <article class="card clickable" id="open-article">
+          <span class="meta">October 2026</span>
+          <h3>Zero-Trust Credential Management</h3>
+          <p class="muted">Implementing open-source zero-knowledge security in enterprise &amp; home lab environments.</p>
+          <ul class="chips small"><li>Cybersecurity</li><li>Identity Management</li><li>SysAdmin</li></ul>
+        </article>
+      </div>
+    </div>
+
+    <article id="article-full" hidden>
+      <button class="back" id="back">← All articles</button>
+      <ul class="chips small"><li>Cybersecurity</li><li>Identity Management</li><li>SysAdmin</li></ul>
+      <h2 class="title">Zero-Trust Credential Management: Implementing Open-Source Zero-Knowledge Security in Enterprise &amp; Home Lab Environments</h2>
+      <p class="meta">Published: October 2026 | Author: System Integration &amp; Security Insights</p>
+
+      <h3>1. The Vulnerability of Modern Authentication</h3>
+      <p>In modern IT infrastructure—spanning cloud services, local Active Directory domains, and home lab hypervisors—passwords and API tokens remain the primary attack vector. The combination of password reuse, weak hashing algorithms, and unencrypted local notes creates widespread credential exposure.</p>
+      <p>For system administrators and IT specialists, security cannot rely on memory or browser-based credential storage. Web browsers are primary targets for infostealer malware, which extracts local SQLite databases storing unencrypted or loosely encrypted master keys directly from session memory.</p>
+      <p>To build a resilient security posture, organizations and engineers must transition to Zero-Knowledge, Zero-Trust Architecture.</p>
+
+      <h3>2. Understanding Zero-Knowledge Architecture</h3>
+      <p>A Zero-Knowledge framework ensures that sensitive data (passwords, SSH keys, MFA seeds) is encrypted and decrypted locally on the client device before it ever travels across the network or reaches a server.</p>
+      <pre><code>[ User Master Password ] + [ Key Derivation Function (PBKDF2 / Argon2id) ]
+                           │
+                           ▼
+                 [ Symmetric AES-256 Key ]
+                           │
+                           ▼
+    [ Encrypted Vault Payload (Ciphertext) Sent to Server ]</code></pre>
+      <p><strong>Key technical mechanisms:</strong></p>
+      <ol>
+        <li><strong>Client-Side Encryption:</strong> The vault payload is encrypted using AES-CBC 256-bit encryption at the endpoint.</li>
+        <li><strong>Key Derivation (Argon2id / PBKDF2):</strong> Instead of storing the master password, the client applies Argon2id (or PBKDF2 with high iteration counts, e.g., 600,000+ iterations) to turn the master password into a cryptographic key.</li>
+        <li><strong>Zero Server Memory:</strong> The storage backend (such as Bitwarden or self-hosted Vaultwarden instances) receives only encrypted ciphertext. Even if the server database is completely breached or seized, attacker access yields zero unencrypted data without the master key.</li>
+      </ol>
+
+      <h3>3. Implementing Enterprise-Grade Security: Step-by-Step</h3>
+      <h4>Phase A: Configuring Argon2id Key Derivation</h4>
+      <p>Default key derivation configurations often rely on legacy iteration parameters. Modern hardware acceleration (GPUs) allows brute-forcing weak PBKDF2 configurations at billions of combinations per second. When setting up your password manager, configure key derivation parameters as follows:</p>
+      <ul>
+        <li><strong>KDF Algorithm:</strong> Argon2id</li>
+        <li><strong>KDF Memory:</strong> 64 MB (65,536 KB)</li>
+        <li><strong>KDF Threads:</strong> 4</li>
+        <li><strong>KDF Iterations:</strong> 3 to 4</li>
+      </ul>
+      <p><strong>Why Argon2id?</strong> Argon2id provides memory-hard protection, preventing GPU clusters and ASICs from executing parallel brute-force attacks against stolen vault files.</p>
+
+      <h4>Phase B: Hardening Infrastructure via CLI &amp; Automation</h4>
+      <p>System integration involves automating administrative workflows while keeping secrets out of plain-text scripts. Storing plain-text administrator passwords inside <code>.ps1</code> or <code>.sh</code> files is a major compliance risk.</p>
+
+      <p><strong>1. Secure credential passing in PowerShell (Windows)</strong><br>Instead of embedding cleartext strings in scripts, leverage the Windows Credential Manager or encrypted secure strings. The exported file is protected with DPAPI, so only the same user on the same machine can decrypt it.</p>
+      <pre><code># Store credential securely on the local machine
+$Credential = Get-Credential
+$Credential.Password | ConvertFrom-SecureString | Out-File "C:\AdminScripts\config.cred"
+
+# Securely import in automated background jobs
+$Encrypted = Get-Content "C:\AdminScripts\config.cred" | ConvertTo-SecureString
+$BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($Encrypted)
+$UnsecurePassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)</code></pre>
+
+      <p><strong>2. Environment secrets management in Linux Bash</strong><br>Avoid passing flags with <code>-p</code> or hardcoding credentials in Bash scripts. Use restricted environment files or secrets vaults:</p>
+      <pre><code>#!/usr/bin/env bash
+# Restrict file permissions to root or administrative user only
+# chmod 600 /etc/sysadmin/.env /etc/sysadmin/mysql.cnf
+
+if [ -f /etc/sysadmin/.env ]; then
+    export $(cat /etc/sysadmin/.env | xargs)
+else
+    echo "[ERROR] Missing secure environment configuration file."
+    exit 1
+fi
+
+# mysql.cnf holds [client] user= and password= so nothing shows in "ps aux"
+mysqldump --defaults-extra-file=/etc/sysadmin/mysql.cnf enterprise_db > /backups/db_backup.sql</code></pre>
+
+      <h3>4. Multi-Factor Authentication (MFA) Strategy</h3>
+      <p>Passwords alone—regardless of complexity—do not provide sufficient access control. A modern credential policy enforces hardware-based multi-factor authentication.</p>
+      <div class="scroll">
+        <table>
+          <thead><tr><th>MFA Method</th><th>Security Level</th><th>Risk Vector</th><th>Recommendation</th></tr></thead>
+          <tbody>
+            <tr><td>SMS / Phone Call</td><td>Low</td><td>SIM swapping, SS7 interception</td><td>Avoid for administrative accounts</td></tr>
+            <tr><td>Email OTP</td><td>Medium</td><td>Session hijacking, mailbox compromise</td><td>Acceptable for secondary fallback</td></tr>
+            <tr><td>TOTP apps (Authy, Authenticator)</td><td>High</td><td>Device theft, phishing proxies</td><td>Standard baseline</td></tr>
+            <tr><td>FIDO2 / WebAuthn hardware keys (YubiKey)</td><td>Maximum</td><td>None (phishing-resistant)</td><td>Mandatory for root/domain admins</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>5. Summary &amp; Key Takeaways</h3>
+      <ul>
+        <li>Never store plaintext secrets in scripts, web browsers, or unencrypted local documents.</li>
+        <li>Adopt client-side, zero-knowledge storage using open-source platforms (e.g., Bitwarden / Vaultwarden).</li>
+        <li>Upgrade Vault KDF to Argon2id to resist modern GPU-accelerated hash cracking.</li>
+        <li>Enforce FIDO2 hardware keys for all critical hypervisor, firewall, and identity provider logins.</li>
+        <li>Audit process listings (<code>ps aux</code> / Task Manager) to ensure automated administrative scripts do not leak credentials in open argument parameters.</li>
+      </ul>
+    </article>
+  </section>
+
+  <!-- NEWS -->
+  <section id="news">
+    <h2>News</h2>
+    <div class="grid">
+      <div class="card"><span class="meta">October 2026</span><h3>Portfolio is live</h3><p class="muted">First version of my site is online. More updates coming soon.</p></div>
+    </div>
+  </section>
+
+  <!-- APPS -->
+  <section id="apps">
+    <h2>Apps</h2>
+    <p class="muted" id="gh-note">Utility apps and scripts I recommend, pulled from my GitHub.</p>
+    <div class="grid" id="repos">
+      <div class="card"><h3>Coming soon</h3><p class="muted">My GitHub projects will appear here.</p></div>
+    </div>
+  </section>
+
+  <!-- WINDOWS & LINUX -->
+  <section id="winlinux">
+    <h2>Windows &amp; Linux</h2>
+    <div class="two">
+      <div class="card"><h3>Windows</h3><p class="muted">Administration, PowerShell automation, and enterprise environments.</p></div>
+      <div class="card"><h3>Linux</h3><p class="muted">Bash scripting, servers, and home lab setups.</p></div>
+    </div>
+  </section>
+
+  <footer>© <span id="year"></span> Omaar Saada</footer>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
