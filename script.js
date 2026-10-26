@@ -61,3 +61,48 @@ if (GITHUB_USER) {
 }
 
 document.getElementById("year").textContent = new Date().getFullYear();
+
+// 5) Language switch (EN / DE) – German texts are in lang.js
+function renderStudy(l) {
+  const box = document.getElementById("study-grid");
+  box.innerHTML = "";
+  const i = l === "de" ? 1 : 0;
+  STUDY.forEach(c => {
+    const card = document.createElement("div");
+    card.className = "card study";
+    if (c.img) {
+      const img = document.createElement("img");
+      img.src = c.img;
+      img.alt = c.h[i];
+      img.loading = "lazy";
+      card.append(img);
+    }
+    const h = document.createElement("h3");
+    h.textContent = c.h[i];
+    const ul = document.createElement("ul");
+    c.items.forEach(it => {
+      const li = document.createElement("li");
+      li.textContent = it[i];
+      ul.append(li);
+    });
+    card.append(h, ul);
+    box.append(card);
+  });
+}
+
+function applyLang(l) {
+  document.documentElement.lang = l;
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    if (!el.dataset.en) el.dataset.en = el.textContent;
+    el.textContent = l === "de" ? (DE[el.dataset.i18n] || el.dataset.en) : el.dataset.en;
+  });
+  document.getElementById("article-note").hidden = l !== "de";
+  document.querySelectorAll(".lang button").forEach(b => b.classList.toggle("on", b.dataset.lang === l));
+  renderStudy(l);
+  try { localStorage.setItem("lang", l); } catch (e) {}
+}
+
+document.querySelectorAll(".lang button").forEach(b => b.addEventListener("click", () => applyLang(b.dataset.lang)));
+let savedLang = null;
+try { savedLang = localStorage.getItem("lang"); } catch (e) {}
+applyLang(savedLang || ((navigator.language || "").startsWith("de") ? "de" : "en"));

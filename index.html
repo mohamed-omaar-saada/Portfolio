@@ -10,51 +10,61 @@
 <div class="wrap">
 
   <header>
+    <div class="lang"><button data-lang="en">EN</button><button data-lang="de">DE</button></div>
     <h1>Omaar <span>Saada</span></h1>
-    <p class="tagline">// IT Specialist · System Integration · Windows &amp; Linux</p>
+    <p class="tagline" data-i18n="tagline">// IT Specialist · System Integration · Windows &amp; Linux</p>
   </header>
 
   <nav id="tabs">
-    <button data-tab="about">About</button>
-    <button data-tab="articles">Articles</button>
-    <button data-tab="news">News</button>
+    <button data-tab="about" data-i18n="nav_about">About</button>
+    <button data-tab="education" data-i18n="nav_edu">Education</button>
+    <button data-tab="articles" data-i18n="nav_articles">Articles</button>
+    <button data-tab="news" data-i18n="nav_news">News</button>
     <button data-tab="apps">Apps</button>
     <button data-tab="winlinux">Windows &amp; Linux</button>
   </nav>
 
   <!-- ABOUT -->
   <section id="about">
-    <h2>About me</h2>
-    <p>I am an IT Specialist with a focus on System Integration and infrastructure management. I specialize in bridging the gap between operating system management, network administration, and modern software tools.</p>
-    <p>Driven by a passion for hands-on technical problem-solving, my work spans configuring enterprise environments, writing automation scripts for Windows and Linux, and exploring cyber security practices. When I am not optimizing systems or working on local labs, I share technical scripts, build utility applications, and write about open-source technology.</p>
-    <h3>Focus areas</h3>
+    <div class="bio"><img class="portrait" src="images/portrait.jpg" alt="Portrait of Omaar Saada" width="220" height="220"><div><h2 data-i18n="about_h">About me</h2><p data-i18n="about_p1">I am an IT Specialist with a focus on System Integration and infrastructure management. I specialize in bridging the gap between operating system management, network administration, and modern software tools.</p><p data-i18n="about_p2">Driven by a passion for hands-on technical problem-solving, my work spans configuring enterprise environments, writing automation scripts for Windows and Linux, and exploring cyber security practices. When I am not optimizing systems or working on local labs, I share technical scripts, build utility applications, and write about open-source technology.</p></div></div>
+    <h3 data-i18n="focus_h">Focus areas</h3>
     <ul class="chips">
-      <li>System Integration</li>
-      <li>Infrastructure</li>
-      <li>Network Administration</li>
+      <li data-i18n="c_si">System Integration</li>
+      <li data-i18n="c_infra">Infrastructure</li>
+      <li data-i18n="c_net">Network Administration</li>
       <li>Windows &amp; Linux</li>
-      <li>Automation Scripting</li>
-      <li>Cyber Security</li>
+      <li data-i18n="c_auto">Automation Scripting</li>
+      <li data-i18n="c_sec">Cyber Security</li>
       <li>Open Source</li>
     </ul>
+  </section>
+
+  <!-- EDUCATION -->
+  <section id="education">
+    <h2 data-i18n="edu_h">Education</h2>
+    <p data-i18n="edu_p1">Since January 2026 I’ve been retraining (Umschulung) in IT System Integration in Leipzig. I’m 28 and bring a strong hands-on interest in systems and networks into a structured education.</p>
+    <p class="muted" data-i18n="edu_p2">Looking ahead, I’m interested in specializing in Cybersecurity through further training (Weiterbildung). Below are the subject areas I’ve covered or will cover in school.</p>
+    <h3 data-i18n="edu_topics">Subject areas</h3>
+    <div class="grid" id="study-grid"></div>
   </section>
 
   <!-- ARTICLES -->
   <section id="articles">
     <div id="article-list">
-      <h2>Articles</h2>
+      <h2 data-i18n="nav_articles">Articles</h2>
       <div class="grid">
         <article class="card clickable" id="open-article">
-          <span class="meta">October 2026</span>
+          <span class="meta" data-i18n="date_oct">October 2026</span>
           <h3>Zero-Trust Credential Management</h3>
-          <p class="muted">Implementing open-source zero-knowledge security in enterprise &amp; home lab environments.</p>
+          <p class="muted" data-i18n="art_card">Implementing open-source zero-knowledge security in enterprise &amp; home lab environments.</p>
           <ul class="chips small"><li>Cybersecurity</li><li>Identity Management</li><li>SysAdmin</li></ul>
         </article>
       </div>
     </div>
 
-    <article id="article-full" hidden>
-      <button class="back" id="back">← All articles</button>
+    <article id="article-full" lang="en" hidden>
+      <button class="back" id="back" data-i18n="art_back">← All articles</button>
+      <p class="note" id="article-note" hidden>Hinweis: Dieser Artikel ist derzeit nur auf Englisch verfügbar.</p>
       <ul class="chips small"><li>Cybersecurity</li><li>Identity Management</li><li>SysAdmin</li></ul>
       <h2 class="title">Zero-Trust Credential Management: Implementing Open-Source Zero-Knowledge Security in Enterprise &amp; Home Lab Environments</h2>
       <p class="meta">Published: October 2026 | Author: System Integration &amp; Security Insights</p>
@@ -146,18 +156,18 @@ mysqldump --defaults-extra-file=/etc/sysadmin/mysql.cnf enterprise_db > /backups
 
   <!-- NEWS -->
   <section id="news">
-    <h2>News</h2>
+    <h2 data-i18n="nav_news">News</h2>
     <div class="grid">
-      <div class="card"><span class="meta">October 2026</span><h3>Portfolio is live</h3><p class="muted">First version of my site is online. More updates coming soon.</p></div>
+      <div class="card"><span class="meta" data-i18n="date_oct">October 2026</span><h3 data-i18n="news_h3">Portfolio is live</h3><p class="muted" data-i18n="news_p">First version of my site is online. More updates coming soon.</p></div>
     </div>
   </section>
 
   <!-- APPS -->
   <section id="apps">
     <h2>Apps</h2>
-    <p class="muted" id="gh-note">Utility apps and scripts I recommend, pulled from my GitHub.</p>
+    <p class="muted" id="gh-note" data-i18n="apps_note">Utility apps and scripts I recommend, pulled from my GitHub.</p>
     <div class="grid" id="repos">
-      <div class="card"><h3>Coming soon</h3><p class="muted">My GitHub projects will appear here.</p></div>
+      <div class="card"><h3 data-i18n="apps_soon">Coming soon</h3><p class="muted" data-i18n="apps_soon_p">My GitHub projects will appear here.</p></div>
     </div>
   </section>
 
@@ -165,13 +175,14 @@ mysqldump --defaults-extra-file=/etc/sysadmin/mysql.cnf enterprise_db > /backups
   <section id="winlinux">
     <h2>Windows &amp; Linux</h2>
     <div class="two">
-      <div class="card"><h3>Windows</h3><p class="muted">Administration, PowerShell automation, and enterprise environments.</p></div>
-      <div class="card"><h3>Linux</h3><p class="muted">Bash scripting, servers, and home lab setups.</p></div>
+      <div class="card"><h3>Windows</h3><p class="muted" data-i18n="win_p">Administration, PowerShell automation, and enterprise environments.</p></div>
+      <div class="card"><h3>Linux</h3><p class="muted" data-i18n="lin_p">Bash scripting, servers, and home lab setups.</p></div>
     </div>
   </section>
 
   <footer>© <span id="year"></span> Omaar Saada</footer>
 </div>
+<script src="lang.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
