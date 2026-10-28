@@ -97,3 +97,10 @@ const SKILLS = [
   { h: ["Security & Compliance", "Sicherheit & Compliance"], items: ["Firewalls", "IDS / IPS", "Backup & Recovery", "GDPR / DSGVO", "BSI IT-Grundschutz"] },
   { h: ["Hardware & Service", "Hardware & Service"], items: ["PC hardware", "RAID / NAS / SAN", "Client deployment", "ITIL", "Ticketing"] }
 ];
+
+Object.assign(DE, {
+  try_meta: "Spielbare Web-App",
+  sq_p: "Ein Browserspiel mit 100 Leveln zum Üben von IT-Troubleshooting als Systemadmin: Ticket lesen, Problem lösen, Hinweise nutzen und XP sammeln. Funktioniert am PC und am Handy.",
+  try_btn: "Jetzt spielen",
+  gh_h: "Mehr von GitHub"
+});

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SysAdmin Quest</title>
+<style>
+:root{--bg:#eef1f5;--card:#fff;--tx:#17202b;--mu:#5d6b7c;--ac:#1f5fd6;--on:#fff;--ok:#16794a;--okb:#e3f4ea;--bad:#b3261e;--badb:#fbe9e7;--bd:#d5dce5;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10161d;--card:#19222c;--tx:#e8eef5;--mu:#93a3b5;--ac:#6ea4ff;--on:#0b1220;--ok:#5fd394;--okb:#14301f;--bad:#ff8a80;--badb:#35191a;--bd:#2b3745}}
+:root[data-theme="dark"]{--bg:#10161d;--card:#19222c;--tx:#e8eef5;--mu:#93a3b5;--ac:#6ea4ff;--on:#0b1220;--ok:#5fd394;--okb:#14301f;--bad:#ff8a80;--badb:#35191a;--bd:#2b3745}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+#app{max-width:560px;margin:0 auto;padding:16px}
+h1{font-size:28px;margin:8px 0 2px}h2{font-size:20px;line-height:1.3;margin:14px 0 10px}
+.tier{font-size:15px;font-weight:600;color:var(--mu);margin:22px 0 8px}
+.mu{color:var(--mu);margin:4px 0}
+.bar{height:8px;border-radius:4px;background:var(--bd);margin:12px 0 4px;overflow:hidden}.bar i{display:block;height:100%;background:var(--ac)}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+.pri{display:block;width:100%;margin-top:10px;padding:12px 16px;border:0;border-radius:8px;background:var(--ac);color:var(--on);font-weight:600}
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.tile{height:46px;border:1px solid var(--bd);border-radius:8px;background:var(--card)}
+.tile.on{border-color:var(--ac);color:var(--ac);font-weight:700}
+.tile.ok{background:var(--okb);border-color:var(--ok);color:var(--ok);font-weight:700}
+.tile:disabled{opacity:.45;cursor:default}
+.back{background:none;border:0;color:var(--mu);padding:8px 0}
+.ticket{background:var(--card);border:1px solid var(--bd);border-left:4px solid var(--ac);border-radius:10px;padding:16px}
+.meta{font:13px ui-monospace,Menlo,Consolas,monospace;color:var(--mu)}
+.sc{margin:10px 0 0;max-width:70ch}
+.opt{display:block;width:100%;min-height:48px;margin-top:8px;padding:10px 14px;text-align:left;border:1px solid var(--bd);border-radius:8px;background:var(--bg)}
+.opt:disabled{opacity:.45}
+input{width:100%;box-sizing:border-box;padding:12px;font:16px ui-monospace,Menlo,Consolas,monospace;color:var(--tx);background:var(--bg);border:1px solid var(--bd);border-radius:8px}
+#fb{margin-top:12px;padding:12px;border-radius:8px}#fb:empty{display:none}
+.good{border-left:4px solid var(--ok);background:var(--okb)}.bad{border-left:4px solid var(--bad);background:var(--badb)}
+.hint{margin-top:12px;padding:10px 14px;border:1px dashed var(--mu);border-radius:8px;background:none}
+.hint:disabled{opacity:.5}
+.hn{margin:10px 0 0;padding:10px 14px;border-left:4px solid var(--mu);background:var(--card);border-radius:6px}
+</style></head>
+<body><a href="index.html#apps" style="display:block;max-width:560px;margin:0 auto;padding:12px 16px 0;color:var(--mu);text-decoration:none">← Back to portfolio</a>
+<div id="app"></div>
+<script>
+const T=["Rookie","Technician","Admin","Engineer","Architect"];
+// [scenario, question, options or null, correct index or accepted answers, hint, explanation]
+const L=[
+["A user says the internet is down. Their laptop shows Wi-Fi connected, but no website loads.","What is the best first check?",["Reinstall the browser","Ping the default gateway","Replace the laptop","Reset Active Directory"],1,"Start close to the device and work outward.","Ping the gateway first to prove local connectivity, then test DNS and the internet."],
+["You need to test whether a server at 192.168.1.10 answers on the network.","Type the command that sends echo requests to it.",null,["ping 192.168.1.10","ping -c 4 192.168.1.10","ping -n 4 192.168.1.10"],"It uses ICMP echo.","ping checks reachability. Linux needs -c 4 to stop after four packets, Windows uses -n 4."],
+["ping 8.8.8.8 works, but ping google.com says it could not find the host.","Which service is most likely broken?",["DHCP","DNS","NTP","SMTP"],1,"Names are not being turned into IP addresses.","IP works but names fail: a name resolution (DNS) problem."],
+["A Windows PC has the address 169.254.12.7 and cannot reach anything.","What does this address tell you?",["The DNS cache is full","The DHCP server is down or unreachable","The firewall blocks ICMP","The PC has a static IP"],1,"169.254.x.x is called APIPA.","Windows assigns itself an APIPA address when no DHCP server answers."],
+["You need the IP address, subnet mask and gateway of a Windows PC.","Type the console command.",null,["ipconfig","ipconfig /all"],"It starts with ip and ends with config.","ipconfig shows the configuration; /all adds MAC address, DHCP and DNS details."],
+["On a Linux server you must list all network interfaces and their IP addresses with the modern tool.","Type the command.",null,["ip a","ip addr","ip address","ip addr show","ip address show"],"It replaced ifconfig.","The ip command (iproute2) replaced ifconfig on modern Linux."],
+["A web server is unreachable. The host answers ping, so the network path is fine.","Which port carries HTTPS?",["22","80","443","3389"],2,"Think of the padlock in the browser.","HTTPS uses TCP 443. HTTP is 80, SSH is 22, RDP is 3389."],
+["You cannot reach a Linux server with the default remote shell protocol.","Which TCP port does SSH use by default? Type the number.",null,["22"],"It is lower than 25.","SSH listens on TCP 22 unless the admin changed it."],
+["Users cannot save files and you suspect a Linux disk is full.","Type the command that shows free space per filesystem in human-readable units.",null,["df -h"],"Disk free, plus the human-readable flag.","df -h lists size, used and available space for each mount."],
+["df shows / at 100%. Most data sits somewhere under /var.","Which command summarizes the size of each item in /var?",["ls -l /var","free -m","du -sh /var/*","top"],2,"Disk usage, summarized, human-readable.","du -sh /var/* prints one size per entry so you can drill down."],
+["A script fails with Permission denied. ls -l shows -rw-r--r-- for script.sh.","Type the command that makes the file executable.",null,["chmod +x script.sh","chmod u+x script.sh","chmod 744 script.sh","chmod 755 script.sh","chmod 700 script.sh"],"Change mode, add x.","chmod +x sets the execute bit."],
+["A file has the permissions rwxr-x---.","What is the numeric (octal) mode? Type it.",null,["750"],"r=4, w=2, x=1 for each group.","rwx=7, r-x=5, ---=0, so the mode is 750."],
+["A domain user is locked out after five wrong password tries.","Which tool do you use to unlock the account?",["Task Manager","Event Viewer","Active Directory Users and Computers","Disk Management"],2,"Domain accounts live in the directory.","ADUC lets you unlock accounts and reset passwords."],
+["The Print Spooler service stopped and printing is stuck for everyone.","Type the PowerShell command that restarts it (service name: Spooler).",null,["restart-service spooler","restart-service -name spooler"],"Verb-Noun, then the service name.","Restart-Service Spooler fixes the symptom; check the logs to see why it crashed."],
+["nginx fails to start after a config edit on a systemd Linux server.","Type the command that shows nginx status with recent log lines.",null,["systemctl status nginx","systemctl status nginx.service"],"systemd has its own control tool.","systemctl status shows the state and last log lines. journalctl -u nginx goes deeper."],
+["A user will reproduce an error and you want to watch a log file live.","Which command follows a file as it grows?",["cat /var/log/syslog","tail -f /var/log/syslog","head /var/log/syslog","wc -l /var/log/syslog"],1,"Follow the tail of the file.","tail -f streams new lines as they are written."],
+["Two PCs got the same IP address and users see random disconnects.","What is the most likely cause?",["Low disk space","Wrong time zone","A static IP overlaps the DHCP range","Expired license"],2,"Someone typed an address by hand.","Exclude static addresses from the DHCP scope or use reservations."],
+["A Windows client holds an outdated DNS record for a server that moved.","Type the command that clears the client DNS cache.",null,["ipconfig /flushdns"],"ipconfig with a flush switch.","/flushdns empties the resolver cache so a fresh lookup happens."],
+["Websites are slow and you want to see every router hop to example.com.","Type the Windows command that traces the route.",null,["tracert example.com"],"Trace plus route, without the e.","tracert (Windows) and traceroute (Linux) show each hop and its delay."],
+["A server clock is 10 minutes off and Kerberos logins start failing.","Which protocol keeps clocks in sync?",["SNMP","LDAP","FTP","NTP"],3,"Network Time ...","Kerberos tolerates only a few minutes of drift, so fix time with NTP."],
+["User alice must join the existing Linux group docker without losing her other groups.","Type the usermod command (append to groups).",null,["usermod -ag docker alice","usermod -a -g docker alice","gpasswd -a alice docker"],"Append (-a) to Groups (-G).","Without -a, usermod -G replaces every other group membership."],
+["A backup job reports success, but nobody has ever tested a restore.","What is the best next step?",["Delete old backups","Run a test restore","Disable the job","Nothing, success means it works"],1,"A backup is only proven by restoring.","Regular restore tests prove backups are usable."],
+["An app server cannot reach its database server on port 3306.","Which command tests the TCP port from the Linux app server?",["df -h","chmod 755","nc -vz dbserver 3306","useradd dbserver"],2,"Netcat can probe a port without sending data.","nc -vz attempts a TCP connection. On Windows use Test-NetConnection -Port."],
+["A VM drops to an emergency shell after a disk was removed. /etc/fstab still lists that disk.","What is the most likely fix?",["Change the DNS server","Raise the RAM","Correct or comment out the bad /etc/fstab entry","Replace the CPU"],2,"Boot mounts everything the file lists.","A bad fstab line blocks boot. Fix the line, or add nofail, then reboot."],
+["A Linux server is slow and the load is high.","Type the classic command for a live view of CPU and memory by process.",null,["top","htop"],"Three letters.","top and htop show live per-process CPU and memory use."],
+["After an update a Windows service no longer starts.","Which Event Viewer log holds service start failures?",["Applications and Services Logs → Media","Setup log (installation only)","Windows Logs → System","Security → Audit only"],2,"The operating system itself, not an app.","The Service Control Manager writes start failures to the System log."],
+["You planned a /24 network.","How many usable host addresses does it have? Type the number.",null,["254"],"256 minus network and broadcast.","2^8 = 256, minus 2 reserved addresses = 254."],
+["A firewall rule must allow remote desktop to a Windows server.","Which TCP port is RDP? Type the number.",null,["3389"],"Four digits, starting with 3.","RDP uses TCP 3389. Expose it to the internet only behind a VPN."],
+["A Windows client keeps an old DHCP lease and needs a fresh address.","Type the command that requests a new lease.",null,["ipconfig /renew"],"ipconfig, renew.","Use /release first if needed, then /renew."],
+["Users are locked out of SSH after you edited the sshd config and restarted it.","What should you do before restarting sshd next time?",["Reboot the server","Delete known_hosts","Disable the firewall","Test the config with sshd -t and keep a second session open"],3,"Do not lock yourself out.","sshd -t validates the syntax, and an open session lets you roll back."]
+];
+let S={d:{}};try{S=JSON.parse(localStorage.getItem("saq")||"")||S}catch(e){}
+const sv=()=>{try{localStorage.setItem("saq",JSON.stringify(S))}catch(e){}};
+const $=id=>document.getElementById(id);
+const norm=s=>s.toLowerCase().replace(/\s+/g," ").trim();
+let cur=0,tries=0,hint=0;
+function home(){
+ const done=Object.keys(S.d).length,xp=Object.values(S.d).reduce((a,b)=>a+b,0);
+ let nxt=1;while(S.d[nxt]&&nxt<=L.length)nxt++;
+ let h=`<h1>SysAdmin Quest</h1><p class="mu">Fix the ticket. Learn the command.</p><div class="bar"><i style="width:${done}%"></i></div><p class="mu">${done} of 100 solved, ${xp} XP</p>`;
+ h+=nxt<=L.length?`<button class="pri" onclick="go(${nxt})">${done?"Continue with":"Start"} level ${nxt}</button>`:`<p>You cleared every available level.</p>`;
+ if(L.length<100)h+=`<p class="mu">Levels ${L.length+1} to 100 unlock as new packs are added.</p>`;
+ for(let t=0;t<5;t++){h+=`<div class="tier">${T[t]}, levels ${t*20+1} to ${t*20+20}</div><div class="grid">`;
+  for(let i=t*20+1;i<=t*20+20;i++){const ok=!!S.d[i],av=i<=L.length&&(i==1||S.d[i-1]);
+   h+=`<button class="tile ${ok?"ok":av?"on":""}" ${av||ok?`onclick="go(${i})"`:"disabled"}>${i}</button>`}
+  h+="</div>"}
+ $("app").innerHTML=h;scrollTo(0,0)}
+function go(n){cur=n;tries=0;hint=0;const q=L[n-1];
+ let h=`<button class="back" onclick="home()">← All levels</button><div class="ticket"><div class="meta">Ticket #${String(n).padStart(3,"0")} (${T[Math.floor((n-1)/20)]})</div><p class="sc">${q[0]}</p><h2>${q[1]}</h2><div id="ans">`;
+ if(q[2])h+=q[2].map((o,i)=>`<button class="opt" onclick="pick(${i},this)">${o}</button>`).join("");
+ else h+=`<input id="in" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Type your answer" onkeydown="if(event.key==='Enter')chk()"><button class="pri" onclick="chk()">Check answer</button>`;
+ h+=`</div><div id="fb" role="status"></div></div><button class="hint" id="hb" onclick="hnt()">Show hint (−30 XP)</button><div id="hn"></div>`;
+ $("app").innerHTML=h;scrollTo(0,0)}
+function hnt(){hint=1;$("hn").innerHTML=`<p class="hn">${L[cur-1][4]}</p>`;$("hb").disabled=true}
+function win(){const xp=Math.max(10,100-hint*30-tries*10);S.d[cur]=Math.max(S.d[cur]||0,xp);sv();
+ $("fb").className="good";
+ $("fb").innerHTML=`<b>Solved, +${xp} XP.</b> ${L[cur-1][5]}`+(cur<L.length?`<button class="pri" onclick="go(${cur+1})">Next level</button>`:`<button class="pri" onclick="home()">Back to levels</button>`);
+ document.querySelectorAll("#ans button,#ans input").forEach(e=>e.disabled=true)}
+function bad(){tries++;$("fb").className="bad";$("fb").textContent="Not quite. Re-read the scenario or use the hint."}
+function pick(i,b){if(i===L[cur-1][3])win();else{b.disabled=true;bad()}}
+function chk(){const v=norm($("in").value);if(!v)return;L[cur-1][3].some(a=>norm(a)===v)?win():bad()}
+home();
+</script></body></html>
