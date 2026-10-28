@@ -104,3 +104,5 @@ Object.assign(DE, {
   try_btn: "Jetzt spielen",
   gh_h: "Mehr von GitHub"
 });
+
+DE.art2_card = "Segmentierte virtuelle Netzwerke, Kali/Parrot und verwundbare Zielsysteme in Oracle VM VirtualBox, mit Snapshots für schnelle Wiederherstellung.";

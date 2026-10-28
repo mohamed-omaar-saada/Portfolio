@@ -16,19 +16,17 @@ function showTab(id) {
 buttons.forEach(b => b.addEventListener("click", () => showTab(b.dataset.tab)));
 showTab(location.hash.slice(1) || "about");
 
-// 3) Open / close the full article
+// 3) Open / close a full article
 const list = document.getElementById("article-list");
-const full = document.getElementById("article-full");
-
-document.getElementById("open-article").addEventListener("click", () => {
+document.querySelectorAll("[data-open]").forEach(card => card.addEventListener("click", () => {
   list.hidden = true;
-  full.hidden = false;
+  document.getElementById(card.dataset.open).hidden = false;
   window.scrollTo(0, 0);
-});
-document.getElementById("back").addEventListener("click", () => {
-  full.hidden = true;
+}));
+document.querySelectorAll(".back").forEach(b => b.addEventListener("click", () => {
+  document.querySelectorAll(".article-full").forEach(a => a.hidden = true);
   list.hidden = false;
-});
+}));
 
 // 4) GitHub repos
 if (GITHUB_USER) {
@@ -96,7 +94,7 @@ function applyLang(l) {
     if (!el.dataset.en) el.dataset.en = el.textContent;
     el.textContent = l === "de" ? (DE[el.dataset.i18n] || el.dataset.en) : el.dataset.en;
   });
-  document.getElementById("article-note").hidden = l !== "de";
+  document.querySelectorAll(".article-note").forEach(n => n.hidden = l !== "de");
   document.querySelectorAll(".lang button").forEach(b => b.classList.toggle("on", b.dataset.lang === l));
   renderStudy(l);
   renderSkills(l);
