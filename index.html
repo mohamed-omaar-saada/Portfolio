@@ -3,7 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Omaar Saada – Portfolio</title>
+  <title>Omaar Saada – IT Specialist &amp; System Integration Portfolio</title>
+  <meta name="description" content="Portfolio of Omaar Saada: IT specialist focused on system integration, Windows &amp; Linux administration, networking and cybersecurity. Currently retraining in IT System Integration in Leipzig.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Omaar Saada – IT Specialist &amp; System Integration Portfolio">
+  <meta property="og:description" content="System integration, Windows &amp; Linux, networking and security – portfolio, articles and projects.">
+  <meta name="twitter:card" content="summary">
+  <meta name="theme-color" content="#0b0d12">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -13,6 +19,7 @@
     <div class="lang"><button data-lang="en">EN</button><button data-lang="de">DE</button></div>
     <h1>Omaar <span>Saada</span></h1>
     <p class="tagline" data-i18n="tagline">// IT Specialist · System Integration · Windows &amp; Linux</p>
+    <a class="btn" id="cv-btn" hidden download data-i18n="btn_cv">Download CV</a>
   </header>
 
   <nav id="tabs">
@@ -37,6 +44,14 @@
       <li data-i18n="c_sec">Cyber Security</li>
       <li>Open Source</li>
     </ul>
+  <h3 data-i18n="skills_h">Skills &amp; Technologies</h3>
+    <p class="muted" data-i18n="skills_p">Tools and technologies I work with and am learning in my training.</p>
+    <div class="grid" id="skills-grid"></div>
+    <h3 data-i18n="cert_h">Certifications &amp; Training</h3>
+    <div class="grid">
+      <div class="card"><span class="meta" data-i18n="cert_status">In progress</span><h3 data-i18n="cert_t">IT System Integration – retraining (Umschulung)</h3><p class="muted" data-i18n="cert_p">Leipzig · since January 2026</p></div>
+      <!-- Add real certificates here by copying the card above (e.g. CompTIA, LPI, Cisco, Microsoft, AWS). -->
+    </div>
   </section>
 
   <!-- EDUCATION -->
@@ -175,12 +190,24 @@ mysqldump --defaults-extra-file=/etc/sysadmin/mysql.cnf enterprise_db > /backups
   <section id="winlinux">
     <h2>Windows &amp; Linux</h2>
     <div class="two">
-      <div class="card"><h3>Windows</h3><p class="muted" data-i18n="win_p">Administration, PowerShell automation, and enterprise environments.</p></div>
-      <div class="card"><h3>Linux</h3><p class="muted" data-i18n="lin_p">Bash scripting, servers, and home lab setups.</p></div>
+      <div class="card"><span class="meta">Windows · PowerShell</span><h3 data-i18n="wl1_h">Keeping passwords out of Windows scripts</h3>
+        <p class="muted" data-i18n="wl1_p1">Problem: plain-text admin passwords in .ps1 files are a compliance risk.</p>
+        <p class="muted" data-i18n="wl1_p2">Approach: encrypted secure strings (DPAPI) via ConvertFrom-SecureString, so only the same user on the same machine can decrypt them.</p></div>
+      <div class="card"><span class="meta">Linux · Bash</span><h3 data-i18n="wl2_h">Credential handling in Linux scripts</h3>
+        <p class="muted" data-i18n="wl2_p1">Problem: hardcoded passwords and -p flags leak credentials through the process list.</p>
+        <p class="muted" data-i18n="wl2_p2">Approach: a restricted environment file (chmod 600) and a MySQL defaults file, so nothing shows up in ps aux.</p></div>
     </div>
   </section>
 
-  <footer>© <span id="year"></span> Omaar Saada</footer>
+  <footer>
+    <div class="cta">
+      <h3 data-i18n="cta_h">Let’s talk about IT infrastructure</h3>
+      <p data-i18n="cta_p">Interested in system integration, Windows &amp; Linux or security topics? Let’s connect.</p>
+      <a class="btn" id="mail-btn" hidden data-i18n="btn_mail">Email me</a>
+      <a class="btn alt" href="https://github.com/mohamed-omaar-saada" target="_blank" rel="noopener">GitHub</a>
+    </div>
+    <p>© <span id="year"></span> Omaar Saada</p>
+  </footer>
 </div>
 <script src="lang.js"></script>
 <script src="script.js"></script>

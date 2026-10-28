@@ -99,6 +99,8 @@ function applyLang(l) {
   document.getElementById("article-note").hidden = l !== "de";
   document.querySelectorAll(".lang button").forEach(b => b.classList.toggle("on", b.dataset.lang === l));
   renderStudy(l);
+  renderSkills(l);
+  updateMeta(l);
   try { localStorage.setItem("lang", l); } catch (e) {}
 }
 
@@ -106,3 +108,38 @@ document.querySelectorAll(".lang button").forEach(b => b.addEventListener("click
 let savedLang = null;
 try { savedLang = localStorage.getItem("lang"); } catch (e) {}
 applyLang(savedLang || ((navigator.language || "").startsWith("de") ? "de" : "en"));
+
+function renderSkills(l) {
+  const box = document.getElementById("skills-grid");
+  box.innerHTML = "";
+  SKILLS.forEach(g => {
+    const card = document.createElement("div");
+    card.className = "card skill";
+    const h = document.createElement("h3");
+    h.textContent = g.h[l === "de" ? 1 : 0];
+    const ul = document.createElement("ul");
+    ul.className = "chips small";
+    g.items.forEach(t => { const li = document.createElement("li"); li.textContent = t; ul.append(li); });
+    card.append(h, ul);
+    box.append(card);
+  });
+}
+
+function updateMeta(l) {
+  const d = document.querySelector('meta[name="description"]');
+  if (!d.dataset.en) { d.dataset.en = d.content; document.documentElement.dataset.enTitle = document.title; }
+  document.title = l === "de" ? DE.meta_title : document.documentElement.dataset.enTitle;
+  d.content = l === "de" ? DE.meta_desc : d.dataset.en;
+}
+
+// 6) Optional contact button and CV download
+const CONTACT_EMAIL = "";               // e.g. "name@example.com"
+const CV_FILE = "Omaar-Saada-CV.pdf";   // put your PDF next to index.html
+if (CONTACT_EMAIL) {
+  const m = document.getElementById("mail-btn");
+  m.href = "mailto:" + CONTACT_EMAIL;
+  m.hidden = false;
+}
+fetch(CV_FILE, { method: "HEAD" })
+  .then(r => { if (r.ok) { const b = document.getElementById("cv-btn"); b.href = CV_FILE; b.hidden = false; } })
+  .catch(() => {});
