@@ -9,7 +9,7 @@ function showTab(id) {
   if (![...sections].some(s => s.id === id)) id = "about";
   sections.forEach(s => s.classList.toggle("on", s.id === id));
   buttons.forEach(b => b.classList.toggle("on", b.dataset.tab === id));
-  history.replaceState(null, "", "#" + id);
+  try { history.replaceState(null, "", "#" + id); } catch (e) {}
   window.scrollTo(0, 0);
 }
 
