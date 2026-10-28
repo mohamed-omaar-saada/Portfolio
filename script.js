@@ -133,7 +133,7 @@ function updateMeta(l) {
 }
 
 // 6) Optional contact button and CV download
-const CONTACT_EMAIL = "";               // e.g. "name@example.com"
+const CONTACT_EMAIL = "work.mosaada@gmail.com";               // e.g. "name@example.com"
 const CV_FILE = "Omaar-Saada-CV.pdf";   // put your PDF next to index.html
 if (CONTACT_EMAIL) {
   const m = document.getElementById("mail-btn");
